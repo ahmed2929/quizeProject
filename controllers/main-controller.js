@@ -60,12 +60,31 @@ res.json({message:"sucesslogin"})
 }
 
 var home=async (req,res)=>{
-    console.log('home fired')
+  
     const token=req.token;
 
-     jwt.verify(token, 'AK', function(err, user) {
-         if(err) throw err
-       res.json(user)
+     jwt.verify(token, 'AK', async function(err, result) {
+         if(err) throw err;
+         const quizes=await quize.find().populate('author','name')
+         
+        res.json({
+            quizes
+
+
+
+        })
+        
+
+
+
+
+
+
+
+
+
+
+
        });
     
 
@@ -93,49 +112,37 @@ var home=async (req,res)=>{
 
         const token=req.token;
 
-     jwt.verify(token, 'AK', function(err, user) {
+     jwt.verify(token, 'AK', function(err, us) {
          
         if(err) throw err;
-       
+        
+        var userId=us.userR._id;
+        
 
 
-        const newQuize=new quize({
-            user:{
+       var arrOfques=[...req.body]
+        
 
-                _id: user._id,
+
+
+         const newQuize=new quize({
+            author:{
+
+                _id: userId,
             
                 
-            },
-            question:[
-                {
-                    ques:'what is your name ?',
-                    ans:'ahmed',
-                    dumyQes:['ahmed','ali','bla']
-                },
-                {
-                    ques:'how old are you ?',
-                    ans:'21',
-                    dumyQes:['15','20','21']
-                },
-                {
-                    ques:'are u a gay',
-                    ans:'no',
-                    dumyQes:['yes','no']
-                },
+             },
+              question:arrOfques
 
 
 
-            ]
+         })
 
+          newQuize.save();
 
-
-        })
-
-        newQuize.save()
-
-      var us=await user.findOne({_id:"5e70ecf9a8b56334786d8791"})
-      us.quizes.push( { _id: new mongoose.Types.ObjectId("5e70ecf9a8b56334786d8791")})
-      us.save()
+        user.findOne({_id:userId},(err,data)=>{
+         data.quizes.push( { _id: new mongoose.Types.ObjectId(newQuize._id)})
+        data.save()
       
 
        
@@ -144,6 +151,10 @@ var home=async (req,res)=>{
         res.status(200);
         res.json({data:"sucessCreate"})
         
+
+
+        })
+       
 
 
 
@@ -156,19 +167,7 @@ var home=async (req,res)=>{
 
        });
 
-
-        //login logic
-       
-       
-            
-
-
-            
-        
-
-        
-        
-        }
+    }
 
 
         var quizeResult=(req,res)=>{

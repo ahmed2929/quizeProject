@@ -26,7 +26,7 @@ var verfiyToken=(req,res,next)=>{
 Router.post('/register',controller.register);
 Router.post('/login',controller.login);
 Router.get('/',verfiyToken,controller.home) //to get quiezs from frinds shoud only work when login 
-Router.post('/create',controller.create)
+Router.post('/create',verfiyToken,controller.create)
 Router.get('/results',controller.quizeResult);
 
 
